@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Marriage Bio-data Website
 
-## Getting Started
+A responsive, single-page marriage bio-data (Indian / Hindu style) built with Next.js 16,
+React 19 and Tailwind CSS 4. Families can view it on any phone or laptop, download the
+complete bio-data as an A4 PDF, or share it on WhatsApp.
 
-First, run the development server:
+## Update the content
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Everything — the website **and** the PDF — is generated from one file:
+
+```
+src/data/biodata.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Replace each sample value with the real details. Leave a value as `""` to hide that row.
+2. Put photos in `public/photos/` (portrait 4:5 photos look best):
+   - `profile.jpg` — main photo
+   - `photo-1.jpg` … `photo-10.jpg` — the Photographs grid on the site (add or remove entries in `gallery`)
+   - `pdfPhotoCount` sets how many of those (from the top) are printed in the PDFs; 3 fit one row
+3. Set `sampleData: false` to remove the "Sample content" bar.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+If you replace a photo while `npm run dev` is running, restart the dev server so the new size and
+image are picked up (production builds always read fresh files).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The age is calculated automatically from `dateOfBirth` (format `YYYY-MM-DD`).
 
-## Learn More
+## Run locally
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open <http://localhost:3000>. The PDF is at <http://localhost:3000/biodata.pdf>.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Build for production
 
-## Deploy on Vercel
+```bash
+npm run build
+npm start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The easiest option is [Vercel](https://vercel.com/new). Set the `NEXT_PUBLIC_SITE_URL`
+environment variable to your public URL (for example `https://saurabh-biodata.vercel.app`)
+so WhatsApp link previews pick up the photo.
+
+The page is marked `noindex`, so search engines will not list it.
+
+## How the PDFs work
+
+Two editions are available:
+
+- `/biodata.pdf` — English
+- `/biodata-hindi.pdf` — Hindi (हिन्दी)
+
+Both are route handlers (`src/app/biodata.pdf/route.ts`, `src/app/biodata-hindi.pdf/route.ts`)
+that render the same A4 layout (`src/pdf/BiodataDocument.tsx`) with `@react-pdf/renderer`.
+Photos are auto-rotated, downsized and re-encoded as JPEG with `sharp`, so the PDFs stay small
+enough to send on WhatsApp. Results are cached and refreshed daily so the calculated age stays
+correct.
+
+For the Hindi edition, section titles and field labels are translated automatically
+(`src/data/labels.ts`). Your own text goes in the `hindi` block of `src/data/biodata.ts`:
+`name`, `tagline`, `about`, `partnerPreferences`, and a `values` map from each English value
+(exactly as written) to its Hindi. Anything not translated is shown as written in English.
+
+Fonts are self-hosted in `public/fonts/` (Cormorant Garamond, Mulish, Tiro Devanagari Hindi and
+Noto Serif Devanagari — all under the SIL Open Font License).
+
+## Placeholder photos
+
+`scripts/make-placeholders.mjs` generates the gold-framed placeholder images. Re-run it with
+`node scripts/make-placeholders.mjs` if you ever need them again.
