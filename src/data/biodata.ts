@@ -145,7 +145,7 @@ export const biodata = {
     siblings: [{ relation: "Younger Brother", name: "Shubham Yadav", details: "" }] as Sibling[],
     familyType: "Nuclear Family",
     familyValues: "Traditional values with a modern outlook",
-    nativePlace: "Saidpur, Uttar Pradesh",
+    nativePlace: "Lamhai, Saidpur, Ghazipur, Uttar Pradesh",
     residence: "Vapi, Gujarat",
   },
 
@@ -182,6 +182,7 @@ export const biodata = {
     /** English value (exactly as written above) → Hindi. */
     values: {
       "Saidpur, Uttar Pradesh": "सैदपुर, उत्तर प्रदेश",
+      "Lamhai, Saidpur, Ghazipur, Uttar Pradesh": "लमही, सैदपुर, ग़ाज़ीपुर, उत्तर प्रदेश",
       "5' 10\" (178 cm)": "5 फ़ुट 10 इंच (178 सेमी)",
       "68 kg": "68 किलो",
       "Yadav (Ahir)": "यादव (अहीर)",

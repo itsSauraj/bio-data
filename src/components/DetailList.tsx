@@ -19,7 +19,7 @@ export function DetailList({ fields, columns = 1, lang = "en" }: Props) {
           className="grid gap-0.5 border-b border-gold/25 py-2.5 last:border-b-0 sm:grid-cols-[minmax(8.5rem,38%)_1fr] sm:items-baseline sm:gap-4"
         >
           <span className={labelClass}>{f.label}</span>
-          <span className="text-[15px] leading-6 text-ink sm:text-base">
+          <span className="whitespace-pre-line text-[15px] leading-6 text-ink sm:text-base">
             {f.href ? (
               <a
                 href={f.href}

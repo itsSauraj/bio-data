@@ -156,7 +156,13 @@ export function getSections(data: Biodata, opts: SectionOptions = {}): Section[]
       fields: compact([
         field(L.father, joinParts(tr(fam.father.name), tr(fam.father.occupation))),
         field(L.mother, joinParts(tr(fam.mother.name), tr(fam.mother.occupation))),
-        ...fam.siblings.map((s) => field(tr(s.relation), joinParts(tr(s.name), tr(s.details)))),
+        // One "Siblings" entry, one line per sibling: "Name — Younger Brother, details".
+        field(
+          L.siblings,
+          fam.siblings
+            .map((s) => [joinParts(tr(s.name), tr(s.relation)), tr(s.details)].filter(Boolean).join(", "))
+            .join("\n"),
+        ),
         field(L.familyType, tr(fam.familyType)),
         field(L.familyValues, tr(fam.familyValues)),
         field(L.nativePlace, tr(fam.nativePlace)),
