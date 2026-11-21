@@ -402,11 +402,15 @@ export default function PhotoViewer({ photos, lang }: { photos: SizedPhoto[]; la
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        className={cn("absolute inset-0 touch-none overflow-hidden", zoomed ? (dragging ? "cursor-grabbing" : "cursor-grab") : "cursor-zoom-in")}
+        className={cn(
+          "absolute inset-0 animate-pop touch-none overflow-hidden motion-reduce:animate-none",
+          zoomed ? (dragging ? "cursor-grabbing" : "cursor-grab") : "cursor-zoom-in",
+        )}
       >
-        {/* Strip of slides, moved by index and the live swipe offset. */}
+        {/* Strip of slides, moved by index and the live swipe offset. (No CSS animation here: a
+            filled animation ending in `transform: none` would override the translate.) */}
         <div
-          className={cn("flex h-full w-full animate-pop motion-reduce:animate-none", !dragging && "transition-transform duration-300 ease-out")}
+          className={cn("flex h-full w-full", !dragging && "transition-transform duration-300 ease-out")}
           style={{ transform: `translateX(calc(${-index * 100}% + ${dragX}px))` }}
         >
           {photos.map((photo, i) => {
