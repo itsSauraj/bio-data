@@ -9,12 +9,15 @@ export default function LanguageSwitch({ current }: { current: Lang }) {
   return (
     <nav
       aria-label={LABELS[current].switchLanguage}
+      // Stays anchored while the page content cross-fades (see globals.css).
+      style={{ viewTransitionName: "lang-switch" }}
       className="inline-flex rounded-full border border-gold/50 bg-paper p-0.5 text-sm shadow-sm"
     >
       {LANGS.map((lang) => (
         <Link
           key={lang}
           href={LANG_PATH[lang]}
+          scroll={false}
           lang={lang}
           aria-current={lang === current ? "page" : undefined}
           className={cn(

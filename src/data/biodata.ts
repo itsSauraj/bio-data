@@ -74,7 +74,15 @@ export const biodata = {
    * order). Three fit one row; five or six make two rows. Empty = no photo
    * section in the PDF.
    */
-  pdfPhotos: ["/photos/2.jpg", "/photos/16.jpg", "/photos/9.jpg", "/photos/14.jpg", "/photos/11.jpg"],
+  pdfPhotos: [
+    "/photos/1.jpg",
+    "/photos/2.jpg",
+    "/photos/3.JPG",
+    "/photos/8.jpg",
+    "/photos/11.jpg",
+    "/photos/13.JPG",
+    "/photos/14.jpg",
+  ],
 
   about:
     "I am a calm, family-oriented person who values honesty, respect and simplicity. " +

@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import { biodata } from "@/data/biodata";
 import { sizedGallery } from "@/data/gallery.server";
 import { LABELS, OTHER_LANG, type Lang } from "@/data/labels";
@@ -36,7 +37,9 @@ export default function BiodataPage({ lang }: { lang: Lang }) {
     // `lang` switches the fonts (see globals.css) and tells screen readers the language.
     // GalleryProvider lets the hero portrait open the same viewer as the photo grid.
     <GalleryProvider>
-      <div lang={lang} className="flex flex-1 flex-col font-body">
+      {/* Cross-fades the whole page when switching language (see .lang-swap in globals.css). */}
+      <ViewTransition name="biodata-page" share="lang-swap" default="none">
+        <div lang={lang} className="flex flex-1 flex-col font-body">
         {biodata.sampleData && <SampleNotice />}
         <div
           aria-hidden
@@ -131,7 +134,8 @@ export default function BiodataPage({ lang }: { lang: Lang }) {
         </main>
 
         <MobileActionBar lang={lang} />
-      </div>
+        </div>
+      </ViewTransition>
     </GalleryProvider>
   );
 }

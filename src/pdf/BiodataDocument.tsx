@@ -17,6 +17,7 @@ const C = {
 };
 
 const CONTENT_WIDTH = 595.28 - 2 * 40; // A4 width minus horizontal padding
+const GALLERY_GAP = 10;
 
 /** Portrait frame size on page 1; the server crops the photo to this ratio. */
 const PORTRAIT_WIDTH = 126;
@@ -106,10 +107,9 @@ const s = StyleSheet.create({
   bullet: { flexDirection: "row", alignItems: "flex-start", gap: 7, paddingVertical: 2 },
   bulletText: { flex: 1, fontSize: 9.5 },
   bulletDot: { width: 4.5, height: 4.5, backgroundColor: C.gold, marginTop: 4.2, transform: "rotate(45deg)" },
-  galleryRow: { flexDirection: "row", gap: 10, marginTop: 4, marginBottom: 6 },
+  galleryRow: { flexDirection: "row", gap: GALLERY_GAP, marginTop: 4, marginBottom: 6 },
   galleryItem: {
-    width: 150,
-    height: 187.5, // 4:5; two rows of three fit on one page with the other sections
+    // width/height are set per document from the photo count (see galleryTileSize).
     padding: 3,
     borderWidth: 1.2,
     borderColor: C.gold,
@@ -140,6 +140,14 @@ function Ornament() {
   );
 }
 
+/** Photo pages hold a 2 × 2 grid of large 4:5 tiles (two per row, two rows per A4 page). */
+const GALLERY_PER_ROW = 2;
+
+function galleryTileSize(): { perRow: number; width: number; height: number } {
+  const width = Math.floor((CONTENT_WIDTH - GALLERY_GAP * (GALLERY_PER_ROW - 1)) / GALLERY_PER_ROW) - 1;
+  return { perRow: GALLERY_PER_ROW, width, height: Math.round(width / PDF_PORTRAIT_RATIO) };
+}
+
 function chunk<T>(list: T[], size: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < list.length; i += size) out.push(list.slice(i, i + size));
@@ -154,12 +162,14 @@ type PdfSectionProps = {
   wrap?: boolean;
   /** How many leading items stay glued to the heading (fewer for tall items such as photo rows). */
   keep?: number;
+  /** Start the section on a fresh page. */
+  newPage?: boolean;
 };
 
 /** A titled block whose heading stays with its first items; every item is unsplittable. */
-function PdfSection({ title, titleStyle, items, wrap = true, keep = KEEP_WITH_HEADING }: PdfSectionProps) {
+function PdfSection({ title, titleStyle, items, wrap = true, keep = KEEP_WITH_HEADING, newPage = false }: PdfSectionProps) {
   return (
-    <View style={s.section} wrap={wrap}>
+    <View style={s.section} wrap={wrap} break={newPage}>
       <View wrap={false}>
         <View style={s.sectionHead}>
           <Text style={[s.sectionTitle, titleStyle]}>{title}</Text>
@@ -192,6 +202,7 @@ export function BiodataDocument({ content, images }: BiodataDocumentProps) {
   const contact = section("contact");
   // Personal + Horoscope sit side by side when both exist; otherwise the one present spans the page.
   const sideBySide = Boolean(personal && horoscope);
+  const tile = galleryTileSize();
   const single = sideBySide ? null : (personal ?? horoscope);
 
   const rowItems = (fields: Field[]): ReactNode[] =>
@@ -273,10 +284,11 @@ export function BiodataDocument({ content, images }: BiodataDocumentProps) {
             title={L.photos}
             titleStyle={headingStyle}
             keep={1}
-            items={chunk(images.gallery, 3).map((row, r) => (
+            newPage
+            items={chunk(images.gallery, tile.perRow).map((row, r) => (
               <View key={r} style={s.galleryRow} wrap={false}>
                 {row.map((src, i) => (
-                  <View key={i} style={s.galleryItem}>
+                  <View key={i} style={[s.galleryItem, { width: tile.width, height: tile.height }]}>
                     {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf's Image has no alt prop */}
                     <Image src={src} style={s.photo} />
                   </View>

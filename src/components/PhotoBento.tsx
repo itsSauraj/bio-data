@@ -43,10 +43,13 @@ export default function PhotoBento({ photos }: { photos: SizedPhoto[] }) {
   const lastWheel = useRef(0);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
+  /** Moves to the neighbouring photo; stops at the first and last photo (no wrap-around). */
   const step = useCallback(
     (delta: number) => {
-      if (index === null || count === 0) return;
-      open(photos[(index + delta + count) % count].src);
+      if (index === null) return;
+      const next = index + delta;
+      if (next < 0 || next >= count) return;
+      open(photos[next].src);
     },
     [index, count, photos, open],
   );
@@ -190,25 +193,25 @@ export default function PhotoBento({ photos }: { photos: SizedPhoto[] }) {
             <CloseIcon className="h-5 w-5" />
           </button>
 
-          {count > 1 && (
-            <>
-              <button
-                type="button"
-                aria-label="Previous photo"
-                onClick={() => step(-1)}
-                className={`${viewerButton} absolute left-4 top-1/2 hidden -translate-y-1/2 sm:block`}
-              >
-                <ChevronLeftIcon className="h-6 w-6" />
-              </button>
-              <button
-                type="button"
-                aria-label="Next photo"
-                onClick={() => step(1)}
-                className={`${viewerButton} absolute right-4 top-1/2 hidden -translate-y-1/2 sm:block`}
-              >
-                <ChevronRightIcon className="h-6 w-6" />
-              </button>
-            </>
+          {index > 0 && (
+            <button
+              type="button"
+              aria-label="Previous photo"
+              onClick={() => step(-1)}
+              className={`${viewerButton} absolute left-4 top-1/2 hidden -translate-y-1/2 sm:block`}
+            >
+              <ChevronLeftIcon className="h-6 w-6" />
+            </button>
+          )}
+          {index < count - 1 && (
+            <button
+              type="button"
+              aria-label="Next photo"
+              onClick={() => step(1)}
+              className={`${viewerButton} absolute right-4 top-1/2 hidden -translate-y-1/2 sm:block`}
+            >
+              <ChevronRightIcon className="h-6 w-6" />
+            </button>
           )}
 
           <p className="pointer-events-none absolute bottom-5 left-1/2 w-[90%] -translate-x-1/2 truncate text-center text-sm text-white/80">
