@@ -16,7 +16,7 @@ export function SectionCard({ id, title, subtitle, className, children }: Props)
     <section
       id={id}
       className={cn(
-        "scroll-mt-6 rounded-2xl border border-gold/40 bg-paper/95 px-5 py-6 shadow-[0_10px_40px_-22px_rgba(123,30,43,0.35)] sm:px-8 sm:py-8 print:shadow-none",
+        "shimmer-border scroll-mt-6 rounded-2xl border border-gold/40 bg-paper/95 px-5 py-6 shadow-[0_10px_40px_-22px_rgba(123,30,43,0.35)] sm:px-8 sm:py-8 print:shadow-none",
         className,
       )}
     >

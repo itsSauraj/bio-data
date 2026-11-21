@@ -123,7 +123,7 @@ export async function renderBiodataPdf(lang: Lang): Promise<Uint8Array<ArrayBuff
 
   const [profile, ...gallery] = await Promise.all([
     portraitToDataUrl(biodata.photo),
-    ...biodata.gallery.slice(0, biodata.pdfPhotoCount).map((photo) => photoToDataUrl(photo.src)),
+    ...biodata.pdfPhotos.map((src) => photoToDataUrl(src)),
   ]);
 
   const content = getContent(biodata, lang, new Date());

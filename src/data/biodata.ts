@@ -50,6 +50,7 @@ export const biodata = {
    * names must match the files in public/photos/ exactly (including case).
    */
   gallery: [
+    { src: "/photos/2.jpg", alt: "Saurabh Yadav – portrait" },
     { src: "/photos/1.jpg", alt: "Saurabh Yadav – photo 1" },
     { src: "/photos/3.JPG", alt: "Saurabh Yadav – photo 2" },
     { src: "/photos/4.JPG", alt: "Saurabh Yadav – photo 3" },
@@ -68,8 +69,12 @@ export const biodata = {
     { src: "/photos/18.jpg", alt: "Saurabh Yadav – photo 16" },
   ] as Photo[],
 
-  /** How many gallery photos (from the top) are printed in the PDFs; 3 fit one row. 0 hides the PDF photo section. */
-  pdfPhotoCount: 3,
+  /**
+   * Photos printed in the PDFs (file names from the gallery above, in this
+   * order). Three fit one row; five or six make two rows. Empty = no photo
+   * section in the PDF.
+   */
+  pdfPhotos: ["/photos/2.jpg", "/photos/16.jpg", "/photos/9.jpg", "/photos/14.jpg", "/photos/11.jpg"],
 
   about:
     "I am a calm, family-oriented person who values honesty, respect and simplicity. " +

@@ -108,8 +108,8 @@ const s = StyleSheet.create({
   bulletDot: { width: 4.5, height: 4.5, backgroundColor: C.gold, marginTop: 4.2, transform: "rotate(45deg)" },
   galleryRow: { flexDirection: "row", gap: 10, marginTop: 4, marginBottom: 6 },
   galleryItem: {
-    width: 160,
-    height: 200,
+    width: 150,
+    height: 187.5, // 4:5; two rows of three fit on one page with the other sections
     padding: 3,
     borderWidth: 1.2,
     borderColor: C.gold,
@@ -147,10 +147,17 @@ function chunk<T>(list: T[], size: number): T[][] {
 }
 
 type HeadingStyle = { fontFamily: string; fontWeight?: number };
-type PdfSectionProps = { title: string; titleStyle: HeadingStyle; items: ReactNode[]; wrap?: boolean };
+type PdfSectionProps = {
+  title: string;
+  titleStyle: HeadingStyle;
+  items: ReactNode[];
+  wrap?: boolean;
+  /** How many leading items stay glued to the heading (fewer for tall items such as photo rows). */
+  keep?: number;
+};
 
 /** A titled block whose heading stays with its first items; every item is unsplittable. */
-function PdfSection({ title, titleStyle, items, wrap = true }: PdfSectionProps) {
+function PdfSection({ title, titleStyle, items, wrap = true, keep = KEEP_WITH_HEADING }: PdfSectionProps) {
   return (
     <View style={s.section} wrap={wrap}>
       <View wrap={false}>
@@ -158,9 +165,9 @@ function PdfSection({ title, titleStyle, items, wrap = true }: PdfSectionProps) 
           <Text style={[s.sectionTitle, titleStyle]}>{title}</Text>
           <View style={s.sectionLine} />
         </View>
-        {items.slice(0, KEEP_WITH_HEADING)}
+        {items.slice(0, keep)}
       </View>
-      {items.slice(KEEP_WITH_HEADING)}
+      {items.slice(keep)}
     </View>
   );
 }
@@ -265,6 +272,7 @@ export function BiodataDocument({ content, images }: BiodataDocumentProps) {
           <PdfSection
             title={L.photos}
             titleStyle={headingStyle}
+            keep={1}
             items={chunk(images.gallery, 3).map((row, r) => (
               <View key={r} style={s.galleryRow} wrap={false}>
                 {row.map((src, i) => (

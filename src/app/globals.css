@@ -20,6 +20,94 @@
   --font-devanagari: var(--font-tiro), "Noto Serif Devanagari", "Mangal", serif;
 }
 
+/* ── Motion ───────────────────────────────────────────────────────────── */
+@theme {
+  --animate-pop: pop 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-fade-in: fade-in 0.25s ease-out both;
+  --animate-march: march 1.2s linear infinite;
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  /* Marching dashes: one dash + gap period is 16 units (see DashedFrame). */
+  @keyframes march {
+    to {
+      stroke-dashoffset: -32;
+    }
+  }
+}
+
+/* A gold highlight travelling slowly along a card's border. */
+@property --shimmer-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes shimmer-spin {
+  to {
+    --shimmer-angle: 360deg;
+  }
+}
+
+@layer components {
+  .shimmer-border {
+    position: relative;
+  }
+
+  .shimmer-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(
+      from var(--shimmer-angle),
+      transparent 0 68%,
+      var(--color-gold) 84%,
+      var(--color-gold-light) 91%,
+      transparent 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: shimmer-spin 7s linear infinite;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer-border::before {
+      animation: none;
+    }
+  }
+
+  @media print {
+    .shimmer-border::before {
+      display: none;
+    }
+  }
+}
+
 /* ── Base ─────────────────────────────────────────────────────────────── */
 :root {
   color-scheme: light;
@@ -61,3 +149,5 @@ body {
     break-inside: avoid;
   }
 }
+
+/* motion rules above */

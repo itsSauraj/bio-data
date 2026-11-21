@@ -7,6 +7,8 @@ import { cn } from "@/lib/cn";
 import { cropToObjectPosition, portraitCrop } from "@/lib/portrait";
 import ActionBar from "./ActionBar";
 import AgeChip from "./AgeChip";
+import { DashedArch } from "./DashedFrame";
+import HeroPhotoButton from "./HeroPhotoButton";
 import { Corner, Divider } from "./Ornaments";
 
 const cornerClass = "pointer-events-none absolute h-14 w-14 text-gold sm:h-20 sm:w-20";
@@ -24,7 +26,7 @@ export default function Hero({ lang, content }: { lang: Lang; content: Content }
   const focus = `${position.x.toFixed(2)}% ${position.y.toFixed(2)}%`;
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-gold/50 bg-paper px-5 py-8 shadow-[0_24px_60px_-30px_rgba(123,30,43,0.4)] sm:px-10 sm:py-10 print:shadow-none">
+    <section className="shimmer-border relative overflow-hidden rounded-3xl border border-gold/50 bg-paper px-5 py-8 shadow-[0_24px_60px_-30px_rgba(123,30,43,0.4)] sm:px-10 sm:py-10 print:shadow-none">
       <Corner className={`${cornerClass} left-3 top-3`} />
       <Corner className={`${cornerClass} right-3 top-3 rotate-90`} />
       <Corner className={`${cornerClass} bottom-3 right-3 rotate-180`} />
@@ -44,20 +46,26 @@ export default function Hero({ lang, content }: { lang: Lang; content: Content }
 
       <div className="mt-8 flex flex-col items-center gap-8 md:flex-row md:gap-12">
         <div className="w-52 shrink-0 sm:w-60">
-          <div className="aspect-4/5 rounded-t-full rounded-b-2xl border-[3px] border-gold bg-paper p-1.5 shadow-lg shadow-maroon/10">
-            <div className="relative h-full w-full overflow-hidden rounded-t-full rounded-b-xl ring-1 ring-gold/70">
+          <div className="relative aspect-4/5 rounded-t-full rounded-b-2xl bg-paper p-2 shadow-lg shadow-maroon/10">
+            <DashedArch />
+            <HeroPhotoButton
+              src={photo.src}
+              label={`Open photo: ${photo.alt}`}
+              className="relative block h-full w-full cursor-zoom-in overflow-hidden rounded-t-full rounded-b-xl ring-1 ring-gold/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-maroon"
+            >
               <Image
                 src={photo.src}
                 alt={photo.alt}
                 fill
                 preload
+                loading="eager"
                 quality={95}
                 // The arch shows a `zoom`-times magnified slice, so request a source that many times larger.
                 sizes={`(min-width: 640px) ${Math.ceil(15 * zoom)}rem, ${Math.ceil(13 * zoom)}rem`}
                 className="object-cover"
                 style={{ objectPosition: focus, transform: `scale(${zoom})`, transformOrigin: focus }}
               />
-            </div>
+            </HeroPhotoButton>
           </div>
         </div>
 

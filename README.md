@@ -14,9 +14,8 @@ src/data/biodata.ts
 
 1. Replace each sample value with the real details. Leave a value as `""` to hide that row.
 2. Put photos in `public/photos/` (portrait 4:5 photos look best):
-   - `profile.jpg` — main photo
-   - `photo-1.jpg` … `photo-10.jpg` — the Photographs grid on the site (add or remove entries in `gallery`)
-   - `pdfPhotoCount` sets how many of those (from the top) are printed in the PDFs; 3 fit one row
+   - any file names work; `photo.src` is the main portrait and `gallery` lists the Photographs grid on the site
+   - `pdfPhotos` lists which of those are printed in the PDFs (three per row)
 3. Set `sampleData: false` to remove the "Sample content" bar.
 
 If you replace a photo while `npm run dev` is running, restart the dev server so the new size and
