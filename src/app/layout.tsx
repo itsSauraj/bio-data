@@ -24,7 +24,13 @@ const tiro = Tiro_Devanagari_Hindi({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+// Public URL for absolute links in metadata (WhatsApp previews). Set
+// NEXT_PUBLIC_SITE_URL to override; on Vercel the production domain is used.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000");
 const title = `${biodata.name} | Bio-data`;
 const description = `Bio-data of ${biodata.name}${biodata.tagline ? ` — ${biodata.tagline}` : ""}.`;
 
