@@ -78,7 +78,7 @@ export default function PhotoBento({ photos, lang = "en" }: { photos: SizedPhoto
     if (shown !== index) track.scrollTo({ left: index * track.clientWidth, behavior: wasClosed ? "instant" : "smooth" });
   }, [index]);
 
-  // Keyboard navigation and page scroll lock while the viewer is open.
+  // Keyboard navigation while the viewer is open.
   useEffect(() => {
     if (index === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -87,13 +87,30 @@ export default function PhotoBento({ photos, lang = "en" }: { photos: SizedPhoto
       else if (e.key === "ArrowLeft") step(-1);
     };
     window.addEventListener("keydown", onKey);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previousOverflow;
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, [index, close, step]);
+
+  // Lock the page behind the viewer. `overflow: hidden` alone is ignored by
+  // iOS Safari for touch scrolling, so the body is pinned in place at the
+  // current scroll offset and restored when the viewer closes.
+  const isOpen = index !== null;
+  useEffect(() => {
+    if (!isOpen) return;
+    const scrollY = window.scrollY;
+    const { position, top, left, right, width, overflow } = document.body.style;
+    Object.assign(document.body.style, {
+      position: "fixed",
+      top: `-${scrollY}px`,
+      left: "0",
+      right: "0",
+      width: "100%",
+      overflow: "hidden",
+    });
+    return () => {
+      Object.assign(document.body.style, { position, top, left, right, width, overflow });
+      window.scrollTo({ top: scrollY, behavior: "instant" });
+    };
+  }, [isOpen]);
 
   /** A finger swipe (or trackpad) moved the track: sync the open photo to the slide now in view. */
   const handleTrackScroll = () => {
@@ -214,7 +231,7 @@ export default function PhotoBento({ photos, lang = "en" }: { photos: SizedPhoto
           role="dialog"
           aria-modal="true"
           aria-label={current.alt}
-          className="fixed inset-0 z-50 animate-fade-in bg-black/95 motion-reduce:animate-none print:hidden"
+          className="fixed inset-0 z-50 animate-fade-in overscroll-none bg-black/95 motion-reduce:animate-none print:hidden"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
@@ -223,7 +240,8 @@ export default function PhotoBento({ photos, lang = "en" }: { photos: SizedPhoto
             ref={trackRef}
             onScroll={handleTrackScroll}
             onWheel={handleWheel}
-            className="flex h-full w-full animate-pop snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-contain [scrollbar-width:none] motion-reduce:animate-none [&::-webkit-scrollbar]:hidden"
+            // touch-pan-x: horizontal swipes scroll the track; vertical ones never reach the page (used for swipe-down-to-close).
+            className="flex h-full w-full animate-pop touch-pan-x snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-contain [scrollbar-width:none] motion-reduce:animate-none [&::-webkit-scrollbar]:hidden"
           >
             {photos.map((photo, i) => (
               <div

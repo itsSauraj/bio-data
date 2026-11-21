@@ -46,7 +46,7 @@ export default function BiodataPage({ lang }: { lang: Lang }) {
           className="h-1.5 w-full bg-linear-to-r from-maroon via-gold to-maroon print:hidden"
         />
 
-        <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 pb-28 pt-4 sm:gap-8 sm:px-6 sm:pt-6 md:pb-12 lg:px-8">
+        <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 pb-[calc(5.25rem+env(safe-area-inset-bottom))] pt-4 sm:gap-8 sm:px-6 sm:pt-6 md:pb-12 lg:px-8">
           <div className="flex justify-end print:hidden">
             <LanguageSwitch current={lang} />
           </div>

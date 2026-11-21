@@ -1,0 +1,1 @@
+- [No co-author in commits](no-co-author-in-commits.md) — never add Co-Authored-By or AI attribution lines to commits or PRs
