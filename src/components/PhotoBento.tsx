@@ -1,11 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { biodata } from "@/data/biodata";
+import { LABELS, LANG_PATH, type Lang } from "@/data/labels";
 import type { SizedPhoto } from "@/lib/image-size";
 import { DashedRect } from "./DashedFrame";
 import { useGallery } from "./GalleryContext";
-import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "./Icons";
+import { ChevronLeftIcon, ChevronRightIcon, CloseIcon, ShareIcon } from "./Icons";
+
+function isAbort(err: unknown): boolean {
+  return err instanceof DOMException && err.name === "AbortError";
+}
+
+function openWhatsApp(text: string) {
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+}
 
 /**
  * Target row height per breakpoint (CSS variable --row-h, set on the list);
@@ -31,9 +41,12 @@ const viewerButton =
  * scroll-snap track, so it follows the finger), swipe down or press Esc to
  * close, scroll the mouse wheel or use the arrow keys/buttons on desktop.
  */
-export default function PhotoBento({ photos }: { photos: SizedPhoto[] }) {
+export default function PhotoBento({ photos, lang = "en" }: { photos: SizedPhoto[]; lang?: Lang }) {
   const { openSrc, open, close } = useGallery();
   const count = photos.length;
+  const L = LABELS[lang];
+  const personName = lang === "hi" && biodata.hindi.name ? biodata.hindi.name : biodata.name;
+  const [sharing, setSharing] = useState(false);
 
   const found = openSrc === null ? -1 : photos.findIndex((p) => p.src === openSrc);
   const index = found >= 0 ? found : null;
@@ -115,6 +128,50 @@ export default function PhotoBento({ photos }: { photos: SizedPhoto[] }) {
     if (dy > SWIPE_CLOSE_PX && Math.abs(dx) < SWIPE_CLOSE_PX / 1.5) close();
   };
 
+  /**
+   * Shares the open photo: the image file itself via the share sheet (with
+   * the website link in the message), or a message with links to the photo
+   * and the website where files cannot be shared.
+   */
+  const handleSharePhoto = async () => {
+    if (index === null) return;
+    const photo = photos[index];
+    const siteUrl = new URL(LANG_PATH[lang], window.location.origin).href;
+    const photoUrl = new URL(photo.src, window.location.origin).href;
+    const text = L.sharePhotoMessage(personName, siteUrl);
+    const title = `${personName} – ${L.photos}`;
+
+    if (typeof navigator.share !== "function") {
+      openWhatsApp(`${text}\n${photoUrl}`);
+      return;
+    }
+
+    setSharing(true);
+    try {
+      try {
+        const response = await fetch(photo.src);
+        if (response.ok) {
+          const blob = await response.blob();
+          const extension = photo.src.split(".").pop()?.toLowerCase() || "jpg";
+          const fileName = `${biodata.name.trim().replace(/\s+/g, "-")}-photo-${index + 1}.${extension}`;
+          const file = new File([blob], fileName, { type: blob.type || "image/jpeg" });
+          if (navigator.canShare?.({ files: [file] })) {
+            await navigator.share({ title, text, files: [file] });
+            return;
+          }
+        }
+      } catch (err) {
+        if (isAbort(err)) return;
+        console.error(err);
+      }
+      await navigator.share({ title, text, url: photoUrl });
+    } catch (err) {
+      if (!isAbort(err)) openWhatsApp(`${text}\n${photoUrl}`);
+    } finally {
+      setSharing(false);
+    }
+  };
+
   if (count === 0) return null;
   const current = index === null ? null : photos[index];
 
@@ -191,6 +248,17 @@ export default function PhotoBento({ photos }: { photos: SizedPhoto[] }) {
 
           <button type="button" onClick={close} aria-label="Close" className={`${viewerButton} absolute right-4 top-4`}>
             <CloseIcon className="h-5 w-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSharePhoto}
+            disabled={sharing}
+            aria-label={L.sharePhoto}
+            className={`${viewerButton} absolute left-4 top-4 flex items-center gap-2 px-3.5 text-sm font-semibold disabled:opacity-60`}
+          >
+            <ShareIcon className="h-5 w-5" />
+            <span>{L.sharePhoto}</span>
           </button>
 
           {index > 0 && (

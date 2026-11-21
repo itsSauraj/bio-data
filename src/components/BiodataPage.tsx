@@ -114,7 +114,7 @@ export default function BiodataPage({ lang }: { lang: Lang }) {
                 subtitle={O.photos}
                 className="lg:col-span-2"
               >
-                <PhotoBento photos={sizedGallery} />
+                <PhotoBento photos={sizedGallery} lang={lang} />
               </SectionCard>
             )}
 

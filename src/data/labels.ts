@@ -97,6 +97,8 @@ const en = {
   print: "Print",
   shareMessage: (name: string) => `Namaste 🙏 Please find the bio-data of ${name}.`,
   sharePdfMessage: (name: string) => `Namaste 🙏 Please find the bio-data of ${name} (PDF).`,
+  sharePhoto: "Share photo",
+  sharePhotoMessage: (name: string, siteUrl: string) => `Namaste 🙏 A photo of ${name}. Full bio-data: ${siteUrl}`,
   confidential:
     "This bio-data is shared in confidence with prospective families. Please do not forward it without permission.",
   preparedBy: (name: string) => `Prepared with love by the family of ${name}.`,
@@ -189,6 +191,8 @@ const hi: Labels = {
   print: "प्रिंट",
   shareMessage: (name) => `नमस्ते 🙏 कृपया ${name} का परिचय पत्र देखें।`,
   sharePdfMessage: (name) => `नमस्ते 🙏 कृपया ${name} का परिचय पत्र (PDF) देखें।`,
+  sharePhoto: "फ़ोटो साझा करें",
+  sharePhotoMessage: (name, siteUrl) => `नमस्ते 🙏 ${name} की एक फ़ोटो। पूरा परिचय पत्र: ${siteUrl}`,
   confidential: "यह परिचय पत्र संभावित परिवारों के साथ विश्वासपूर्वक साझा किया गया है। कृपया बिना अनुमति इसे आगे न भेजें।",
   preparedBy: (name) => `${name} के परिवार द्वारा स्नेहपूर्वक तैयार किया गया।`,
 };
