@@ -38,25 +38,34 @@ export const biodata = {
   tagline: "Software Engineer · Surat",
 
   /**
-   * Main portrait (website arch + PDF). `focus` is where the face is, as a
-   * percentage from the left and top of the photo; `zoom` is how close to
-   * frame it — 1 shows the photo's full width, 2 is twice as close. The
-   * values below give a head-and-shoulders crop of the current photo.
+   * Main portrait (website arch + PDF). `focus` is the spot to centre the
+   * frame on, as a percentage from the left and top of the photo (for a
+   * head-and-shoulders crop, aim at the neck); `zoom` is how close to frame
+   * it — 1 shows as much of the photo as fits, 3 is three times closer.
    */
-  photo: { src: "/photos/profile.jpg", alt: "Saurabh Yadav", focus: { x: 47, y: 44 }, zoom: 1.9 } as ProfilePhoto,
+  photo: { src: "/photos/2jpg.jpg", alt: "Saurabh Yadav", focus: { x: 48, y: 33 }, zoom: 2.8 } as ProfilePhoto,
 
-  /** Photographs grid on the website — add or remove entries (up to 10 works well). */
+  /**
+   * Photographs grid on the website — add or remove entries freely. File
+   * names must match the files in public/photos/ exactly (including case).
+   */
   gallery: [
-    { src: "/photos/photo-1.jpg", alt: "Saurabh Yadav – photo 1" },
-    { src: "/photos/photo-2.jpg", alt: "Saurabh Yadav – photo 2" },
-    { src: "/photos/photo-3.jpg", alt: "Saurabh Yadav – photo 3" },
-    { src: "/photos/photo-4.jpg", alt: "Saurabh Yadav – photo 4" },
-    { src: "/photos/photo-5.jpg", alt: "Saurabh Yadav – photo 5" },
-    { src: "/photos/photo-6.jpg", alt: "Saurabh Yadav – photo 6" },
-    { src: "/photos/photo-7.jpg", alt: "Saurabh Yadav – photo 7" },
-    { src: "/photos/photo-8.jpg", alt: "Saurabh Yadav – photo 8" },
-    { src: "/photos/photo-9.jpg", alt: "Saurabh Yadav – photo 9" },
-    { src: "/photos/photo-10.jpg", alt: "Saurabh Yadav – photo 10" },
+    { src: "/photos/1jpg.jpg", alt: "Saurabh Yadav – photo 1" },
+    { src: "/photos/3.JPG", alt: "Saurabh Yadav – photo 2" },
+    { src: "/photos/4.JPG", alt: "Saurabh Yadav – photo 3" },
+    { src: "/photos/5.JPG", alt: "Saurabh Yadav – photo 4" },
+    { src: "/photos/6.JPG", alt: "Saurabh Yadav – photo 5" },
+    { src: "/photos/8.jpg", alt: "Saurabh Yadav – photo 6" },
+    { src: "/photos/9.jpg", alt: "Saurabh Yadav – photo 7" },
+    { src: "/photos/10.jpg", alt: "Saurabh Yadav – photo 8" },
+    { src: "/photos/11.jpg", alt: "Saurabh Yadav – photo 9" },
+    { src: "/photos/12.jpg", alt: "Saurabh Yadav – photo 10" },
+    { src: "/photos/13.JPG", alt: "Saurabh Yadav – photo 11" },
+    { src: "/photos/14.jpg", alt: "Saurabh Yadav – photo 12" },
+    { src: "/photos/15.jpg", alt: "Saurabh Yadav – photo 13" },
+    { src: "/photos/16.jpg", alt: "Saurabh Yadav – photo 14" },
+    { src: "/photos/17.jpg", alt: "Saurabh Yadav – photo 15" },
+    { src: "/photos/18.jpg", alt: "Saurabh Yadav – photo 16" },
   ] as Photo[],
 
   /** How many gallery photos (from the top) are printed in the PDFs; 3 fit one row. 0 hides the PDF photo section. */

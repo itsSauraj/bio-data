@@ -2,7 +2,7 @@ import { biodata } from "./biodata";
 import { withImageSizes, type SizedPhoto } from "@/lib/image-size";
 
 /**
- * Gallery photos with their real pixel dimensions.
+ * Photos with their real pixel dimensions (gallery and main portrait).
  *
  * The files are read once, when this server module loads, rather than during
  * rendering: Cache Components treats module-scope reads as predictable values
@@ -14,3 +14,5 @@ import { withImageSizes, type SizedPhoto } from "@/lib/image-size";
  * (or any source file is saved).
  */
 export const sizedGallery: SizedPhoto[] = withImageSizes(biodata.gallery);
+
+export const sizedProfile: SizedPhoto = withImageSizes([biodata.photo])[0];

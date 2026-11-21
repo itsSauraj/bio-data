@@ -5,12 +5,13 @@ import { Divider } from "./Ornaments";
 type Props = {
   id?: string;
   title: string;
-  titleHi?: string;
+  /** The same heading in the other language, shown small under the title. */
+  subtitle?: string;
   className?: string;
   children: ReactNode;
 };
 
-export function SectionCard({ id, title, titleHi, className, children }: Props) {
+export function SectionCard({ id, title, subtitle, className, children }: Props) {
   return (
     <section
       id={id}
@@ -23,7 +24,7 @@ export function SectionCard({ id, title, titleHi, className, children }: Props) 
         <h2 className="font-display text-[1.75rem] font-semibold leading-tight tracking-wide text-maroon sm:text-3xl">
           {title}
         </h2>
-        {titleHi && <p className="mt-0.5 font-devanagari text-sm text-gold-dark">{titleHi}</p>}
+        {subtitle && <p className="mt-0.5 font-devanagari text-sm text-gold-dark">{subtitle}</p>}
         <Divider className="mx-auto mt-3 h-5 w-48 text-gold" />
       </header>
       {children}

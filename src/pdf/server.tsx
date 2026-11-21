@@ -5,7 +5,8 @@ import { Font, renderToBuffer } from "@react-pdf/renderer";
 import sharp from "sharp";
 import { biodata, type ProfilePhoto } from "@/data/biodata";
 import type { Lang } from "@/data/labels";
-import { getPdfContent } from "@/data/sections";
+import { getContent } from "@/data/sections";
+import { portraitCrop } from "@/lib/portrait";
 import { BiodataDocument, PDF_PORTRAIT_RATIO } from "./BiodataDocument";
 
 const PUBLIC_DIR = path.join(process.cwd(), "public");
@@ -76,9 +77,8 @@ async function photoToDataUrl(src: string, maxSide = 1400): Promise<string | nul
 }
 
 /**
- * Crops the portrait to the PDF frame's proportions around the face, using
- * the same `focus` / `zoom` settings as the website arch: the focus point
- * stays at the same relative position and the view is `zoom` times closer.
+ * Crops the portrait to the PDF frame's proportions using the same
+ * `focus` / `zoom` settings as the website arch (see lib/portrait.ts).
  */
 async function portraitToDataUrl(photo: ProfilePhoto): Promise<string | null> {
   try {
@@ -89,20 +89,11 @@ async function portraitToDataUrl(photo: ProfilePhoto): Promise<string | null> {
     if ((meta.orientation ?? 1) >= 5) [width, height] = [height, width]; // EXIF-rotated
     if (!width || !height) return photoToDataUrl(photo.src);
 
-    const zoom = Math.max(1, photo.zoom ?? 1);
-    const fx = (photo.focus?.x ?? 50) / 100;
-    const fy = (photo.focus?.y ?? 50) / 100;
-
-    let cropW = width / zoom;
-    let cropH = cropW / PDF_PORTRAIT_RATIO;
-    if (cropH > height) {
-      cropH = height;
-      cropW = cropH * PDF_PORTRAIT_RATIO;
-    }
-    const w = Math.max(1, Math.floor(cropW));
-    const h = Math.max(1, Math.floor(cropH));
-    const left = Math.min(width - w, Math.max(0, Math.round(fx * (width - cropW))));
-    const top = Math.min(height - h, Math.max(0, Math.round(fy * (height - cropH))));
+    const crop = portraitCrop(width, height, PDF_PORTRAIT_RATIO, photo.focus, photo.zoom);
+    const w = Math.max(1, Math.floor(crop.width));
+    const h = Math.max(1, Math.floor(crop.height));
+    const left = Math.min(width - w, Math.max(0, Math.round(crop.left)));
+    const top = Math.min(height - h, Math.max(0, Math.round(crop.top)));
 
     const buffer = await sharp(source)
       .rotate()
@@ -134,7 +125,7 @@ export async function renderBiodataPdf(lang: Lang): Promise<Uint8Array<ArrayBuff
     ...biodata.gallery.slice(0, biodata.pdfPhotoCount).map((photo) => photoToDataUrl(photo.src)),
   ]);
 
-  const content = getPdfContent(biodata, lang, new Date());
+  const content = getContent(biodata, lang, new Date());
   const buffer = await renderToBuffer(
     <BiodataDocument content={content} images={{ profile, gallery: gallery.filter((g): g is string => g !== null) }} />,
   );

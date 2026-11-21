@@ -1,9 +1,10 @@
 import type { Biodata } from "./biodata";
-import { COMMON_VALUES_HI, LABELS, type Labels, type Lang } from "./labels";
+import { COMMON_VALUES_HI, LABELS, OTHER_LANG, type Labels, type Lang } from "./labels";
 
 export type Field = { label: string; value: string; href?: string };
 export type SectionId = "personal" | "horoscope" | "education" | "family" | "contact";
-export type Section = { id: SectionId; title: string; titleHi: string; fields: Field[] };
+/** `title` is in the requested language; `subtitle` is the same heading in the other language. */
+export type Section = { id: SectionId; title: string; subtitle: string; fields: Field[] };
 
 export function parseIsoDate(iso: string): { y: number; m: number; d: number } | null {
   const match = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(iso.trim());
@@ -78,12 +79,13 @@ function whatsappHref(phone: string): string | undefined {
 export type SectionOptions = { now?: Date; lang?: Lang };
 
 /**
- * Turns the bio-data object into labelled sections shared by the web page
+ * Turns the bio-data object into labelled sections shared by the website
  * and the PDFs. Pass `now` to include the age, and `lang` for Hindi.
  */
 export function getSections(data: Biodata, opts: SectionOptions = {}): Section[] {
   const lang = opts.lang ?? "en";
   const L = LABELS[lang];
+  const O = LABELS[OTHER_LANG[lang]];
   const tr = makeTranslator(data, lang);
   const list = (items: string[]) => items.map(tr).join(", ");
 
@@ -96,7 +98,7 @@ export function getSections(data: Biodata, opts: SectionOptions = {}): Section[]
     {
       id: "personal",
       title: L.personal,
-      titleHi: LABELS.hi.personal,
+      subtitle: O.personal,
       fields: compact([
         field(L.fullName, name),
         field(L.dateOfBirth, dob),
@@ -118,7 +120,7 @@ export function getSections(data: Biodata, opts: SectionOptions = {}): Section[]
     {
       id: "horoscope",
       title: L.horoscope,
-      titleHi: LABELS.hi.horoscope,
+      subtitle: O.horoscope,
       fields: compact([
         field(L.subCaste, tr(h.subCaste)),
         field(L.gotra, tr(h.gotra)),
@@ -133,7 +135,7 @@ export function getSections(data: Biodata, opts: SectionOptions = {}): Section[]
     {
       id: "education",
       title: L.education,
-      titleHi: LABELS.hi.education,
+      subtitle: O.education,
       fields: compact([
         field(L.highestQualification, tr(e.highestQualification)),
         field(L.schooling, tr(e.schooling)),
@@ -150,7 +152,7 @@ export function getSections(data: Biodata, opts: SectionOptions = {}): Section[]
     {
       id: "family",
       title: L.family,
-      titleHi: LABELS.hi.family,
+      subtitle: O.family,
       fields: compact([
         field(L.father, joinParts(tr(fam.father.name), tr(fam.father.occupation))),
         field(L.mother, joinParts(tr(fam.mother.name), tr(fam.mother.occupation))),
@@ -164,7 +166,7 @@ export function getSections(data: Biodata, opts: SectionOptions = {}): Section[]
     {
       id: "contact",
       title: L.contact,
-      titleHi: LABELS.hi.contact,
+      subtitle: O.contact,
       fields: compact([
         ...ct.persons.map((person) =>
           field(`${tr(person.name)} (${tr(person.relation)})`, person.phone, telHref(person.phone)),
@@ -179,20 +181,25 @@ export function getSections(data: Biodata, opts: SectionOptions = {}): Section[]
   return sections.filter((s) => s.fields.length > 0);
 }
 
-/** Everything the PDF document needs, already in the requested language. */
-export type PdfContent = {
+/** Everything the website or a PDF needs, already in the requested language. */
+export type Content = {
   lang: Lang;
   labels: Labels;
   mantra: string;
   name: string;
   tagline: string;
   about: string;
+  /** Quick facts shown as chips under the name. */
+  summary: string[];
   partnerPreferences: string[];
   sections: Section[];
 };
 
-export function getPdfContent(data: Biodata, lang: Lang, now: Date): PdfContent {
+/** Pass `now` (PDF, inside a cached function) to include the age; omit it for the prerendered website. */
+export function getContent(data: Biodata, lang: Lang, now?: Date): Content {
   const hi = lang === "hi" ? data.hindi : null;
+  const tr = makeTranslator(data, lang);
+  const { personal: p, career: c, family: fam } = data;
   return {
     lang,
     labels: LABELS[lang],
@@ -200,6 +207,7 @@ export function getPdfContent(data: Biodata, lang: Lang, now: Date): PdfContent 
     name: hi?.name || data.name,
     tagline: hi?.tagline || data.tagline,
     about: hi?.about || data.about,
+    summary: [p.height, c.location || fam.residence, p.religion, c.occupation].filter((v) => v.trim()).map(tr),
     partnerPreferences: hi && hi.partnerPreferences.length > 0 ? hi.partnerPreferences : data.partnerPreferences,
     sections: getSections(data, { now, lang }),
   };

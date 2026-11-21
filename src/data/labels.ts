@@ -6,7 +6,7 @@
 export type Lang = "en" | "hi";
 
 const en = {
-  kicker: "Marriage Bio-data",
+  kicker: "Bio-data",
   years: "years",
   photo: "Photo",
   footerPage: (page: number, total: number) => `Page ${page} of ${total}`,
@@ -76,12 +76,26 @@ const en = {
   whatsapp: "WhatsApp",
   email: "Email",
   address: "Address",
+
+  // Website UI
+  languageName: "English",
+  switchLanguage: "Change language",
+  englishPdf: "English PDF",
+  hindiPdf: "हिन्दी PDF",
+  englishShort: "English",
+  hindiShort: "हिन्दी",
+  share: "Share",
+  print: "Print",
+  shareMessage: (name: string) => `Namaste 🙏 Please find the bio-data of ${name}.`,
+  confidential:
+    "This bio-data is shared in confidence with prospective families. Please do not forward it without permission.",
+  preparedBy: (name: string) => `Prepared with love by the family of ${name}.`,
 };
 
 export type Labels = typeof en;
 
 const hi: Labels = {
-  kicker: "वैवाहिक परिचय पत्र",
+  kicker: "परिचय पत्र",
   years: "वर्ष",
   photo: "फ़ोटो",
   footerPage: (page, total) => `पृष्ठ ${page} / ${total}`,
@@ -145,9 +159,25 @@ const hi: Labels = {
   whatsapp: "व्हाट्सऐप",
   email: "ईमेल",
   address: "पता",
+
+  languageName: "हिन्दी",
+  switchLanguage: "भाषा बदलें",
+  englishPdf: "अंग्रेज़ी PDF",
+  hindiPdf: "हिन्दी PDF",
+  englishShort: "अंग्रेज़ी",
+  hindiShort: "हिन्दी",
+  share: "साझा करें",
+  print: "प्रिंट",
+  shareMessage: (name) => `नमस्ते 🙏 कृपया ${name} का परिचय पत्र देखें।`,
+  confidential: "यह परिचय पत्र संभावित परिवारों के साथ विश्वासपूर्वक साझा किया गया है। कृपया बिना अनुमति इसे आगे न भेजें।",
+  preparedBy: (name) => `${name} के परिवार द्वारा स्नेहपूर्वक तैयार किया गया।`,
 };
 
 export const LABELS: Record<Lang, Labels> = { en, hi };
+
+/** The other edition's language, and where each edition of the website lives. */
+export const OTHER_LANG: Record<Lang, Lang> = { en: "hi", hi: "en" };
+export const LANG_PATH: Record<Lang, string> = { en: "/", hi: "/hi" };
 
 /**
  * Hindi for common values that appear in most bio-datas. Anything specific

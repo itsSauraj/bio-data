@@ -1,6 +1,6 @@
-# Marriage Bio-data Website
+# Bio-data Website
 
-A responsive, single-page marriage bio-data (Indian / Hindu style) built with Next.js 16,
+A responsive, single-page bio-data (Indian / Hindu style) built with Next.js 16,
 React 19 and Tailwind CSS 4. Families can view it on any phone or laptop, download the
 complete bio-data as an A4 PDF, or share it on WhatsApp.
 
@@ -47,6 +47,17 @@ environment variable to your public URL (for example `https://saurabh-biodata.ve
 so WhatsApp link previews pick up the photo.
 
 The page is marked `noindex`, so search engines will not list it.
+
+## Hindi edition of the website
+
+The site is available in two languages, with an English ⇄ हिन्दी switch at the top of the page:
+
+- `/` — English
+- `/hi` — Hindi
+
+Both are prerendered pages, so either link can be shared directly. The Share button shares the
+link of the page you are on. Headings and labels are translated from `src/data/labels.ts`; your
+own text comes from the `hindi` block in `src/data/biodata.ts` (see below).
 
 ## How the PDFs work
 

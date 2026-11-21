@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import { Circle, Document, Image, Page, Path, StyleSheet, Svg, Text, View } from "@react-pdf/renderer";
-import type { Field, PdfContent, SectionId } from "@/data/sections";
+import type { Content, Field, SectionId } from "@/data/sections";
 
 export type PdfImages = { profile: string | null; gallery: string[] };
-export type BiodataDocumentProps = { content: PdfContent; images: PdfImages };
+export type BiodataDocumentProps = { content: Content; images: PdfImages };
 
 const C = {
   maroon: "#7B1E2B",
@@ -20,7 +20,7 @@ const CONTENT_WIDTH = 595.28 - 2 * 40; // A4 width minus horizontal padding
 
 /** Portrait frame size on page 1; the server crops the photo to this ratio. */
 const PORTRAIT_WIDTH = 126;
-const PORTRAIT_HEIGHT = 158;
+const PORTRAIT_HEIGHT = 157.5; // 4:5, matching the arch on the website
 export const PDF_PORTRAIT_RATIO = PORTRAIT_WIDTH / PORTRAIT_HEIGHT;
 
 /** How many leading items stay glued to a section heading so it is never orphaned at a page end. */

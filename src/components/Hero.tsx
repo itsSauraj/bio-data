@@ -1,5 +1,10 @@
 import Image from "next/image";
 import { biodata } from "@/data/biodata";
+import { sizedProfile } from "@/data/gallery.server";
+import type { Lang } from "@/data/labels";
+import type { Content } from "@/data/sections";
+import { cn } from "@/lib/cn";
+import { cropToObjectPosition, portraitCrop } from "@/lib/portrait";
 import ActionBar from "./ActionBar";
 import AgeChip from "./AgeChip";
 import { Corner, Divider } from "./Ornaments";
@@ -7,16 +12,16 @@ import { Corner, Divider } from "./Ornaments";
 const cornerClass = "pointer-events-none absolute h-14 w-14 text-gold sm:h-20 sm:w-20";
 const chipClass = "rounded-full border border-gold/50 bg-cream px-3.5 py-1 text-sm text-ink";
 
-export default function Hero() {
-  const { personal, career, family, photo } = biodata;
-  const chips = [personal.height, career.location || family.residence, personal.religion, career.occupation].filter(
-    (c) => c && c.trim(),
-  );
+export default function Hero({ lang, content }: { lang: Lang; content: Content }) {
+  const { photo, personal } = biodata;
+  const L = content.labels;
 
-  // Portrait framing: keep the face at the focus point and zoom in around it
-  // (the same crop the PDF uses), so a full-length photo shows head and shoulders.
-  const focus = `${photo.focus?.x ?? 50}% ${photo.focus?.y ?? 50}%`;
+  // Portrait framing (same crop as the PDF): a 4:5 window `zoom` times closer,
+  // centred on `focus`, so a full-length photo shows head and shoulders.
   const zoom = Math.max(1, photo.zoom ?? 1);
+  const crop = portraitCrop(sizedProfile.width, sizedProfile.height, 4 / 5, photo.focus, zoom);
+  const position = cropToObjectPosition(sizedProfile.width, sizedProfile.height, crop);
+  const focus = `${position.x.toFixed(2)}% ${position.y.toFixed(2)}%`;
 
   return (
     <section className="relative overflow-hidden rounded-3xl border border-gold/50 bg-paper px-5 py-8 shadow-[0_24px_60px_-30px_rgba(123,30,43,0.4)] sm:px-10 sm:py-10 print:shadow-none">
@@ -27,7 +32,14 @@ export default function Hero() {
 
       <div className="text-center">
         <p className="font-devanagari text-lg text-maroon sm:text-xl">{biodata.invocation.devanagari}</p>
-        <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.35em] text-gold-dark">Marriage Bio-data</p>
+        <p
+          className={cn(
+            "mt-1 font-bold text-gold-dark",
+            lang === "hi" ? "text-sm" : "text-[11px] uppercase tracking-[0.35em]",
+          )}
+        >
+          {L.kicker}
+        </p>
       </div>
 
       <div className="mt-8 flex flex-col items-center gap-8 md:flex-row md:gap-12">
@@ -49,14 +61,14 @@ export default function Hero() {
 
         <div className="w-full min-w-0 flex-1 text-center md:w-auto md:text-left">
           <h1 className="font-display text-4xl font-semibold leading-tight text-maroon sm:text-5xl lg:text-6xl">
-            {biodata.name}
+            {content.name}
           </h1>
-          {biodata.tagline && <p className="mt-2 text-base text-muted sm:text-lg">{biodata.tagline}</p>}
+          {content.tagline && <p className="mt-2 text-base text-muted sm:text-lg">{content.tagline}</p>}
           <Divider className="mx-auto mt-4 h-5 w-44 text-gold md:mx-0" />
 
           <ul className="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
-            <AgeChip dob={personal.dateOfBirth} className={chipClass} />
-            {chips.map((c) => (
+            <AgeChip dob={personal.dateOfBirth} suffix={L.years} className={chipClass} />
+            {content.summary.map((c) => (
               <li key={c} className={chipClass}>
                 {c}
               </li>
@@ -64,7 +76,7 @@ export default function Hero() {
           </ul>
 
           <div className="mt-7 hidden md:block print:hidden">
-            <ActionBar />
+            <ActionBar lang={lang} />
           </div>
         </div>
       </div>

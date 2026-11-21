@@ -25,6 +25,12 @@
   color-scheme: light;
 }
 
+/* Hindi edition (/hi): Devanagari serif for headings and body alike. */
+[lang="hi"] {
+  --font-display: var(--font-tiro), "Noto Serif Devanagari", "Mangal", serif;
+  --font-body: var(--font-tiro), "Noto Serif Devanagari", "Mangal", serif;
+}
+
 html {
   scroll-behavior: smooth;
 }

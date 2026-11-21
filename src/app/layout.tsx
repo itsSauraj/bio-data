@@ -25,8 +25,8 @@ const tiro = Tiro_Devanagari_Hindi({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-const title = `${biodata.name} | Marriage Bio-data`;
-const description = `Marriage bio-data of ${biodata.name}${biodata.tagline ? ` — ${biodata.tagline}` : ""}.`;
+const title = `${biodata.name} | Bio-data`;
+const description = `Bio-data of ${biodata.name}${biodata.tagline ? ` — ${biodata.tagline}` : ""}.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
