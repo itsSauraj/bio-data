@@ -51,7 +51,9 @@ export default function Hero({ lang, content }: { lang: Lang; content: Content }
                 alt={photo.alt}
                 fill
                 preload
-                sizes="(min-width: 640px) 15rem, 13rem"
+                quality={95}
+                // The arch shows a `zoom`-times magnified slice, so request a source that many times larger.
+                sizes={`(min-width: 640px) ${Math.ceil(15 * zoom)}rem, ${Math.ceil(13 * zoom)}rem`}
                 className="object-cover"
                 style={{ objectPosition: focus, transform: `scale(${zoom})`, transformOrigin: focus }}
               />

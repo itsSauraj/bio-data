@@ -67,7 +67,7 @@ async function photoToDataUrl(src: string, maxSide = 1400): Promise<string | nul
     const buffer = await sharp(await readFile(publicFile(src)))
       .rotate()
       .resize({ width: maxSide, height: maxSide, fit: "inside", withoutEnlargement: true })
-      .jpeg({ quality: 85 })
+      .jpeg({ quality: 88 })
       .toBuffer();
     return `data:image/jpeg;base64,${buffer.toString("base64")}`;
   } catch (err) {
@@ -99,7 +99,8 @@ async function portraitToDataUrl(photo: ProfilePhoto): Promise<string | null> {
       .rotate()
       .extract({ left, top, width: w, height: h })
       .resize({ width: 800, withoutEnlargement: true })
-      .jpeg({ quality: 85 })
+      // Portrait is small on the page: keep full colour detail and a high quality setting.
+      .jpeg({ quality: 92, chromaSubsampling: "4:4:4" })
       .toBuffer();
     return `data:image/jpeg;base64,${buffer.toString("base64")}`;
   } catch (err) {

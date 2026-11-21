@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
     // Photos are replaced under the same file names; re-check them after a
     // minute instead of Next 16's 4-hour default so new photos show up quickly.
     minimumCacheTTL: 60,
+    // Allowed optimisation qualities: the portrait and lightbox use the higher ones.
+    qualities: [75, 85, 90, 95],
   },
 
   // react-pdf loads its built-in font metrics from disk at runtime,

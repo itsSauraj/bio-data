@@ -43,14 +43,14 @@ export const biodata = {
    * head-and-shoulders crop, aim at the neck); `zoom` is how close to frame
    * it — 1 shows as much of the photo as fits, 3 is three times closer.
    */
-  photo: { src: "/photos/2jpg.jpg", alt: "Saurabh Yadav", focus: { x: 48, y: 33 }, zoom: 2.8 } as ProfilePhoto,
+  photo: { src: "/photos/2.jpg", alt: "Saurabh Yadav", focus: { x: 48, y: 33 }, zoom: 2.8 } as ProfilePhoto,
 
   /**
    * Photographs grid on the website — add or remove entries freely. File
    * names must match the files in public/photos/ exactly (including case).
    */
   gallery: [
-    { src: "/photos/1jpg.jpg", alt: "Saurabh Yadav – photo 1" },
+    { src: "/photos/1.jpg", alt: "Saurabh Yadav – photo 1" },
     { src: "/photos/3.JPG", alt: "Saurabh Yadav – photo 2" },
     { src: "/photos/4.JPG", alt: "Saurabh Yadav – photo 3" },
     { src: "/photos/5.JPG", alt: "Saurabh Yadav – photo 4" },

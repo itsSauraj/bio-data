@@ -73,6 +73,7 @@ export default function PhotoBento({ photos }: { photos: SizedPhoto[] }) {
                   src={photo.src}
                   alt={photo.alt}
                   fill
+                  quality={85}
                   sizes="(min-width: 1024px) 480px, (min-width: 640px) 50vw, 100vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -109,7 +110,7 @@ export default function PhotoBento({ photos }: { photos: SizedPhoto[] }) {
           )}
 
           <div className="relative h-[78vh] w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
-            <Image src={current.src} alt={current.alt} fill sizes="100vw" className="object-contain" />
+            <Image src={current.src} alt={current.alt} fill quality={90} sizes="100vw" className="object-contain" />
           </div>
 
           {count > 1 && (
